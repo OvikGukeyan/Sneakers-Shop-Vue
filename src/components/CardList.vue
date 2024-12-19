@@ -1,11 +1,14 @@
 <script setup>
-
+import axios from 'axios';
 import Card from './Card.vue'
-
 
 defineProps({
   items: Array,
 })
+
+const emits = defineEmits(['onClickBookmark', 'onClickAdd'])
+
+
 
 
 </script>
@@ -18,8 +21,10 @@ defineProps({
       :image-url="item.imageUrl"
       :title="item.title"
       :price="item.price"
-      :is-added="true"
-      :is-bookmarked="true"
+      :is-added="item.isAdded"
+      :is-bookmarked="item.isBookmarked"
+      :onClickBookmark="() => emits('onClickBookmark', item.id)"
+      :onClickAdd="() => emits('onClickAdd', item.id)"
     />
   </div>
 </template>

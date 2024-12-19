@@ -1,3 +1,9 @@
+<script setup>
+
+
+const emit = defineEmits(['handleCartClick'])
+</script>
+
 <template>
     <header class="flex justify-between border-b border-slate-200 px-10  py-8 w-full ">
       <div class="flex gap-4 items-center">
@@ -9,7 +15,7 @@
       </div>
 
       <ul class="flex items-center gap-10">
-        <li class="flex items-center gap-3 text-gray-500 hover:text-black cursor-pointer">
+        <li @click="emit('handleCartClick')" class="flex items-center gap-3 text-gray-500 hover:text-black cursor-pointer">
           <img src="/cart.svg" alt="Cart">
           <b>45 € </b>
         </li>

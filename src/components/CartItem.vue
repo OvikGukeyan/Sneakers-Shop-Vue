@@ -4,6 +4,7 @@ defineProps({
   imageUrl: String,
   price: Number,
 })
+const emit = defineEmits(['onClickDelete'])
 </script>
 
 <template>
@@ -16,7 +17,7 @@ defineProps({
           <span class="text-slate-400"> Price: </span>
           <b> {{ price }} € </b>
         </div>
-        <img class="opacity-30 cursor-pointer hover:opacity-100 transition" src="/close.svg" alt="" />
+        <img @click="emit('onClickDelete')" class="opacity-30 cursor-pointer hover:opacity-100 transition" src="/close.svg" alt="" />
       </div>
     </div>
   </div>

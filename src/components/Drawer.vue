@@ -1,14 +1,24 @@
 <script setup>
 import DrawerHead from './DrawerHead.vue'
 import CartItemsList from './CartItemsList.vue'
+import { inject } from 'vue'
+
+defineProps({
+  items: Array,
+})
+
+const handleCartClick = inject('handleCartClick')
 </script>
 
 <template>
-  <div class="fixed top-0 right-0 w-full h-full bg-black z-10 opacity-70"></div>
+  <div
+    @click="handleCartClick"
+    class="fixed top-0 right-0 w-full h-full bg-black z-10 opacity-70"
+  ></div>
   <div class="fixed top-0 right-0 w-96 h-full bg-white z-20 p-8">
     <div class="flex flex-col h-full">
-      <DrawerHead />
-      <CartItemsList />
+      <DrawerHead/>
+      <CartItemsList :items="items" />
       <div class="flex flex-col gap-4 mt-7">
         <div class="flex gap-2">
           <span>Total price:</span>
