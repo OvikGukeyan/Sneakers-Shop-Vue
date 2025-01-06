@@ -6,7 +6,7 @@ defineProps({
   items: Array,
 })
 
-const emits = defineEmits(['onClickBookmark', 'onClickAdd'])
+const emit = defineEmits(['onClickBookmark', 'onClickAdd'])
 
 
 
@@ -23,8 +23,8 @@ const emits = defineEmits(['onClickBookmark', 'onClickAdd'])
       :price="item.price"
       :is-added="item.isAdded"
       :is-bookmarked="item.isBookmarked"
-      :onClickBookmark="() => emits('onClickBookmark', item.id)"
-      :onClickAdd="() => emits('onClickAdd', item.id)"
+      :onClickBookmark="() => emit('onClickBookmark', item.id)"
+      :onClickAdd="() => emit('onClickAdd', item.id)"
     />
   </div>
 </template>

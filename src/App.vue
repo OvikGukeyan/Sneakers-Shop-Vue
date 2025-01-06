@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, provide, reactive, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch, computed } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import CardList from './components/CardList.vue'
@@ -8,11 +8,17 @@ import Drawer from './components/Drawer.vue'
 const items = ref([])
 const cartItems = ref([])
 const isCartOpen = ref(false)
+const isOrderCreating = ref(false)
 
 const filters = reactive({
   sortBy: 'title',
   searchQuery: '',
 })
+
+const totalPrice = computed(
+  () => Math.round(cartItems.value.reduce((acc, item) => acc + item.price, 0) * 100) / 100,
+)
+const vat = computed(() => Math.round((totalPrice.value * 15) / 100))
 
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
@@ -124,20 +130,47 @@ const fetchCart = async () => {
   }
 }
 
+const createOrder = async () => {
+  try {
+    isOrderCreating.value = true
+    const { data } = await axios.post('https://40b6497860f9a336.mokky.dev/orders', {
+      items: cartItems.value,
+      totalPrice: totalPrice.value,
+    })
+    cartItems.value = []
+    items.value.forEach((item) => {
+      item.isAdded = false
+    })
+    isCartOpen.value = false
+    cartItems.value = []
+    alert(`Order was created successfully with id ${data.id}`)
+    return data
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isOrderCreating.value = false
+  }
+}
+
 onMounted(async () => {
   await fetchItems(), await fetchBookmarks(), await fetchCart()
 })
 
 watch(filters, fetchItems)
 
-provide('handleCartClick', handleCartClick)
-provide('onClickDelete', onClickAdd)
+provide('cart', { handleCartClick, onClickAdd, cartItems })
 </script>
 
 <template>
-  <Drawer :items="cartItems" v-if="isCartOpen" />
+  <Drawer
+    v-if="isCartOpen"
+    :totalPrice="totalPrice"
+    :vat="vat"
+    @createOrder="createOrder"
+    :isOrderCreating="isOrderCreating"
+  />
   <div class="bg-white w-4/5 mx-auto rounded-xl shadow-xl mt-14 pb-8">
-    <Header @handleCartClick="handleCartClick" />
+    <Header :totalPrice="totalPrice" @handleCartClick="handleCartClick" />
     <div class="p-10">
       <div class="flex justify-between items-center">
         <h2 class="text-2xl font-bold mb-8">All Sneakers</h2>
