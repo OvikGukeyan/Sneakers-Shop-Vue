@@ -24,7 +24,7 @@ const emit = defineEmits(['onClickBookmark', 'onClickAdd'])
       :is-added="item.isAdded"
       :is-bookmarked="item.isBookmarked"
       :onClickBookmark="() => emit('onClickBookmark', item.id)"
-      :onClickAdd="() => emit('onClickAdd', item.id)"
+      :onClickAdd="() => emit('onClickAdd', item)"
     />
   </div>
 </template>

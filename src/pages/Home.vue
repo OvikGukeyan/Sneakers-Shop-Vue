@@ -1,13 +1,11 @@
 <script setup>
 import axios from 'axios'
 import CardList from '../components/CardList.vue'
-import { inject, reactive, watch, ref, onMounted } from 'vue';
+import { inject, reactive, watch, ref, onMounted } from 'vue'
 
-
-const { onClickAdd} = inject('cart')
+const { removeFromCart, addToCart, cartItems } = inject('cart')
 
 const items = ref([])
-
 
 const filters = reactive({
   sortBy: 'title',
@@ -78,13 +76,25 @@ const onClickBookmark = async (id) => {
     console.error(error)
   }
 }
-
+const onPlusClick = (item) => {
+  if (item.isAdded) {
+    removeFromCart(item)
+  } else {
+    addToCart(item)
+  }
+}
 watch(filters, fetchItems)
+
+watch(cartItems, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: cartItems.value.some((cartItem) => cartItem.id === item.id),
+  }))
+})
 
 onMounted(async () => {
   await fetchItems(), await fetchBookmarks()
 })
-
 </script>
 
 <template>
@@ -111,6 +121,6 @@ onMounted(async () => {
     </div>
   </div>
   <div class="mt-10">
-    <CardList @onClickAdd="onClickAdd" @onClickBookmark="onClickBookmark" :items="items" />
+    <CardList @onClickAdd="onPlusClick" @onClickBookmark="onClickBookmark" :items="items" />
   </div>
 </template>

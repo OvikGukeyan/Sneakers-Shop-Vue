@@ -5,7 +5,7 @@ import { inject } from 'vue'
 
 const {cartItems} = inject('cart')
 
-const {onClickAdd} = inject('cart')
+const {removeFromCart} = inject('cart')
 
 </script>
 
@@ -17,7 +17,7 @@ const {onClickAdd} = inject('cart')
       :image-url="item.imageUrl"
       :title="item.title"
       :price="item.price"
-      @onClickDelete="onClickAdd(item.perentId)"
+      @onClickDelete="removeFromCart(item)"
     />
   </div>
 </template>
