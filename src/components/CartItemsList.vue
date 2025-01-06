@@ -10,7 +10,7 @@ const {onClickAdd} = inject('cart')
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 overflow-y-scroll w-full gap-4 scrollbar-none">
+  <div v-auto-animate class="flex flex-col flex-1 overflow-y-scroll w-full gap-4 scrollbar-none">
     <CartItem
       v-for="item in cartItems"
       :key="item.id"
