@@ -18,21 +18,13 @@ const handleCartClick = () => {
 }
 
 const addToCart = async (item) => {
-  try {
-    cartItems.value.push(item)
-    item.isAdded = true
-  } catch (error) {
-    console.error(error)
-  }
+  cartItems.value.push(item)
+  item.isAdded = true
 }
 
-const removeFromCart = async (item) => {
-  try {
-    cartItems.value = cartItems.value.filter((cartItem) => cartItem.id !== item.id)
-    item.isAdded = false
-  } catch (error) {
-    console.error(error)
-  }
+const removeFromCart = (item) => {
+  cartItems.value = cartItems.value.filter((cartItem) => cartItem.id !== item.id)
+  item.isAdded = false
 }
 
 const createOrder = async () => {
@@ -43,7 +35,7 @@ const createOrder = async () => {
       totalPrice: totalPrice.value,
     })
     cartItems.value = []
-    
+
     isCartOpen.value = false
     cartItems.value = []
     alert(`Order was created successfully with id ${data.id}`)
@@ -55,9 +47,13 @@ const createOrder = async () => {
   }
 }
 
-watch(cartItems, () => {
-  localStorage.setItem('cartItems', JSON.stringify(cartItems.value))
-}, { deep: true })
+watch(
+  cartItems,
+  () => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems.value))
+  },
+  { deep: true },
+)
 
 provide('cart', { handleCartClick, cartItems, addToCart, removeFromCart })
 

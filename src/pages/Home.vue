@@ -26,7 +26,7 @@ const fetchItems = async () => {
     })
     items.value = data.map((obj) => ({
       ...obj,
-      isAdded: false,
+      isAdded: cartItems.value.some((cartItem) => cartItem.id === obj.id),
       isBookmarked: false,
     }))
   } catch (error) {
@@ -38,7 +38,7 @@ const fetchBookmarks = async () => {
   try {
     const { data } = await axios.get('https://40b6497860f9a336.mokky.dev/bookmarks')
     items.value = items.value.map((item) => {
-      const bookmarked = data.find((obj) => obj.perentId === item.id)
+      const bookmarked = data.find((obj) => obj.item_id === item.id)
       if (!bookmarked) {
         return item
       }
@@ -68,7 +68,7 @@ const onClickBookmark = async (id) => {
       findItem.isBookmarked = false
     } else {
       await axios.post(`https://40b6497860f9a336.mokky.dev/bookmarks`, {
-        perentId: id,
+        item_id: id,
       })
       findItem.isBookmarked = true
     }

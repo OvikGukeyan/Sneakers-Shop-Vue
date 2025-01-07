@@ -1,9 +1,9 @@
 <script setup>
-import axios from 'axios';
 import Card from './Card.vue'
 
 defineProps({
   items: Array,
+  isBookmarks: Boolean
 })
 
 const emit = defineEmits(['onClickBookmark', 'onClickAdd'])
@@ -23,7 +23,7 @@ const emit = defineEmits(['onClickBookmark', 'onClickAdd'])
       :price="item.price"
       :is-added="item.isAdded"
       :is-bookmarked="item.isBookmarked"
-      :onClickBookmark="() => emit('onClickBookmark', item.id)"
+      :onClickBookmark="isBookmarks ? null : () =>  emit('onClickBookmark', item.id)"
       :onClickAdd="() => emit('onClickAdd', item)"
     />
   </div>
