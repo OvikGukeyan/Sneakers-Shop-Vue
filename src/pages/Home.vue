@@ -56,9 +56,17 @@ const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
 }
 
-const onChangeSearch = (event) => {
-  filters.searchQuery = event.target.value
+const debounce = (func, delay) => {
+  let timeout
+  return function (...args) {
+    const context = this
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func.apply(context, args), delay)
+  }
 }
+const onChangeSearch = debounce((event) => {
+  filters.searchQuery = event.target.value
+}, 500)
 
 const onClickBookmark = async (id) => {
   const findItem = items.value.find((item) => item.id === id)

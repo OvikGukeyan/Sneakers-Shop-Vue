@@ -6,7 +6,6 @@ import Drawer from './components/Drawer.vue'
 
 const cartItems = ref([])
 const isCartOpen = ref(false)
-const isOrderCreating = ref(false)
 
 const totalPrice = computed(
   () => Math.round(cartItems.value.reduce((acc, item) => acc + item.price, 0) * 100) / 100,
@@ -27,25 +26,7 @@ const removeFromCart = (item) => {
   item.isAdded = false
 }
 
-const createOrder = async () => {
-  try {
-    isOrderCreating.value = true
-    const { data } = await axios.post('https://40b6497860f9a336.mokky.dev/orders', {
-      items: cartItems.value,
-      totalPrice: totalPrice.value,
-    })
-    cartItems.value = []
 
-    isCartOpen.value = false
-    cartItems.value = []
-    alert(`Order was created successfully with id ${data.id}`)
-    return data
-  } catch (error) {
-    console.error(error)
-  } finally {
-    isOrderCreating.value = false
-  }
-}
 
 watch(
   cartItems,
@@ -68,8 +49,6 @@ onMounted(async () => {
     v-if="isCartOpen"
     :totalPrice="totalPrice"
     :vat="vat"
-    @createOrder="createOrder"
-    :isOrderCreating="isOrderCreating"
   />
   <div class="bg-white w-4/5 mx-auto rounded-xl shadow-xl mt-14 pb-8">
     <Header :totalPrice="totalPrice" @handleCartClick="handleCartClick" />

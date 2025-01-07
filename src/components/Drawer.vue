@@ -1,18 +1,38 @@
 <script setup>
+import axios from 'axios'
 import DrawerHead from './DrawerHead.vue'
 import CartItemsList from './CartItemsList.vue'
-import { inject } from 'vue'
+import { ref, inject } from 'vue'
 import InfoBlock from './InfoBlock.vue'
 
-defineProps({
+const props = defineProps({
   totalPrice: Number,
   vat: Number,
-  isOrderCreating: Boolean,
 })
 
-const emit = defineEmits(['createOrder'])
+const { cartItems } = inject('cart')
+const isOrderCreating = ref(false)
+const orderId = ref(null)
 
 const { handleCartClick } = inject('cart')
+
+const createOrder = async () => {
+  try {
+    isOrderCreating.value = true
+    const { data } = await axios.post('https://40b6497860f9a336.mokky.dev/orders', {
+      items: cartItems.value,
+      totalPrice: props.totalPrice,
+    })
+    cartItems.value = []
+    console.log(cartItems)
+    orderId.value = data.id
+    return data
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isOrderCreating.value = false
+  }
+}
 </script>
 
 <template>
@@ -24,11 +44,19 @@ const { handleCartClick } = inject('cart')
     <div class="flex flex-col h-full">
       <DrawerHead />
 
-      <div v-if="!totalPrice" class="flex h-full items-center">
+      <div v-if="!totalPrice || orderId" class="flex h-full items-center">
         <InfoBlock
+          v-if="!totalPrice && !orderId"
           imageUrl="/package-icon.png"
           title="Cart is empty"
           description="Add at least one sneaker to your cart"
+        />
+
+        <InfoBlock
+          v-if="orderId"
+          imageUrl="/order-success-icon.png"
+          title="Order created"
+          :description="`Your order number #${orderId} has been successfully created`"
         />
       </div>
 
@@ -48,7 +76,7 @@ const { handleCartClick } = inject('cart')
 
           <button
             :disabled="!totalPrice || isOrderCreating"
-            @click="emit('createOrder')"
+            @click="createOrder"
             class="bg-lime-500 w-full mt-4 rounded-xl hover:bg-lime-600 active:bg-lime-700 disabled:bg-slate-300 transition text-white font-bold py-3 px-4"
           >
             {{ isOrderCreating ? 'Creating order...' : 'Create order' }}

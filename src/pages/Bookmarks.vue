@@ -28,7 +28,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1>Bookmarks</h1>
+      <h2 class="text-2xl font-bold mb-8">Bookmarks</h2>
+
 
   <div class="mt-10">
     <CardList @onClickAdd="onPlusClick" :items="bookmarks" isBookmarks />
